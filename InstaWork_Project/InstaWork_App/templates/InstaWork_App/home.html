@@ -1,0 +1,62 @@
+ 
+{% extends "InstaWork_App/base.html" %}
+{% load static %}
+{% block content %}
+<section class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end">
+          <a href="{%  url 'InstaWork_App-create' %}" class="text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+      <div class="col-12">
+        <h1 class="h1">Team members</h1>
+        <p class="text-secondary">You have {{ users.count }} team members</p>
+      </div>
+    
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <hr/>
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            {% for user in users %}
+            <div class="name-card">
+              <div class="avatar">
+               
+                <img width="50px" height="50px" src="{% static 'InstaWork_App/images/avatar.png' %}" alt="avatar"/>
+              </div>
+              <div class="name text-secondary">
+                <div><strong>{{ user.firstName }} {{user.lastName }}</strong></div>
+                <div>{{ user.phoneNo }}</div>
+                <div>{{ user.emailID }}</div>
+              </div>
+              <a href="{%  url 'InstaWork_App-edit' user.id %}" class="text-primary">
+               
+                <img width="20px" height="20px" src="{% static 'InstaWork_App/images/icons8-edit-30.png' %}" alt="avatar"/>
+              </a>
+            </div>
+            <hr/>
+            
+            {% endfor %}
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

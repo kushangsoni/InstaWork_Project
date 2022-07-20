@@ -1,0 +1,198 @@
+ 
+{% extends "InstaWork_App/base.html" %}
+{% load static %}
+{% block content %}
+<section class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        {% block title %} {% endblock %}
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <hr />
+      </div>
+      <div class="col-12">
+        <form class="row g-3 needs-validation" novalidate method="post" action="#">
+            {% csrf_token %}
+          <div class="row">
+            <div class="col-12">
+              <p><strong>Info</strong></p>
+              <div class="mb-3">
+                <input type="text" class="form-control" name="firstName" pattern="[A-Za-z]{1,}" id="firstName" value='{{ user.firstName }}' required>
+                <div class="invalid-feedback">
+                    Invalid First Name
+                </div>
+                
+              </div>
+              <div class="mb-3">
+                <input type="text" class="form-control" name="lastName" pattern="[A-Za-z]{1,}" id="lastName" value='{{ user.lastName }}' required>
+                <div class="invalid-feedback">
+                    Invalid Last Name
+                </div>
+              </div>
+              <div class="mb-3 input-group has-validation">
+                <input type="email" class="form-control" name="emailID" id="emailID" value='{{ user.emailID }}' required>
+                <div class="invalid-feedback">
+                    Invalid Email.
+                </div>
+              </div>
+              <div class="mb-3 input-group has-validation">
+                <input type="text" class="form-control" pattern="[0-9]{10}" name="phoneNo" id="phoneNo" value='{{ user.phoneNo }}' required>
+                <div class="invalid-feedback">
+                    Invalid Contact Info.
+                </div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="chk" id="regular" value="regular">
+                <label class="form-check-label form-radio" for="regular">
+                  Regular - Can't delete members
+                </label>
+                <hr />
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="chk" id="admin" value="admin" >
+                <label class="form-check-label form-radio" for="admin">
+                  Admin - can delete members
+                </label>
+                <hr />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-buttons">
+                {% block deleteButton %}
+
+                {% endblock deleteButton%}
+                <div>
+                  <input type="submit" name="save" value="save" class="btn btn-primary"></input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
+
+{% block script %}
+<script>
+
+    instaworks = {
+        elementSelectors: {
+            emailId: "emailID",
+            contactNo: "phoneNo",
+            firstName: "firstName",
+            lastName: "lastName"
+        },
+        regex: {
+            email: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+            contactNo: /[0-9]{10}/,
+            name: /[A-Za-z]{1,}/
+        },
+        initInstawork: function() {
+            var role = "{{ user.role }}";
+            admin = document.getElementById("admin");
+            regular = document.getElementById("regular");
+            var firstName = "{{ user.firstName }}";
+            var lastName = "{{ user.lastName }}";
+            var emailID = "{{ user.emailID }}";
+            var phoneNo = "{{ user.phoneNo }}"
+            if(!firstName){
+                document.getElementById(instaworks.elementSelectors.firstName).setAttribute("placeholder","First Name")
+            }
+            if(!lastName){
+                document.getElementById(instaworks.elementSelectors.lastName).setAttribute("placeholder","Last Name")
+            }
+            if(!emailID){
+                document.getElementById(instaworks.elementSelectors.emailId).setAttribute("placeholder","Email ID")
+            }
+            if(!phoneNo){
+                document.getElementById(instaworks.elementSelectors.contactNo).setAttribute("placeholder","Phone No")
+            }
+            if(role && admin && role==admin.value)
+            {
+            admin.setAttribute("checked","true");
+            }
+            else {
+            regular.setAttribute("checked","true");
+            }
+            instaworks.initBootstrapValidation();
+            instaworks.initEvents();
+        },
+        setPlaceHolder: function(){
+            
+        },
+        initBootstrapValidation: function() {
+            
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+    
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+    
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        },
+        initEvents: function() {
+            let emailIdInputField = document.getElementById(instaworks.elementSelectors.emailId);
+            emailIdInputField.addEventListener("blur", (ev) => {
+                instaworks.validateInputFieldWithPattern(ev.target, instaworks.regex.email);
+            });
+    
+            let contactNoField = document.getElementById(instaworks.elementSelectors.contactNo);
+            if (contactNoField) {
+                contactNoField.addEventListener("blur", (ev) => {
+                    instaworks.validateInputFieldWithPattern(ev.target, instaworks.regex.contactNo);
+                });
+            }
+    
+            let firstNameInputField = document.getElementById(instaworks.elementSelectors.firstName);
+            if (firstNameInputField) {
+                firstNameInputField.addEventListener("blur", (ev) => {
+                    instaworks.validateInputFieldWithPattern(ev.target, instaworks.regex.name);
+                });
+            }
+            
+            let lastNameInputField = document.getElementById(instaworks.elementSelectors.lastName);
+            if (lastNameInputField) {
+                lastNameInputField.addEventListener("blur", (ev) => {
+                    instaworks.validateInputFieldWithPattern(ev.target, instaworks.regex.name);
+                });
+            }
+        },
+        validateInputFieldWithPattern: function(element, pattern) {
+            if (element) {
+                let elementValue = element.value;
+                if (elementValue) {
+                    let isValid = pattern.test(elementValue);
+                    if (isValid) {
+                        element.classList.remove("is-invalid");
+                        element.classList.add("is-valid");
+                    } else {
+                        element.classList.remove("is-valid");
+                        element.classList.add("is-invalid");
+                    }
+                } 
+                else {
+                    element.classList.add("is-invalid");
+                }
+            }
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        instaworks.initInstawork();
+    });
+
+</script>
+{% endblock script %}

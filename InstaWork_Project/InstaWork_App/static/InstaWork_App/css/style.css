@@ -1,0 +1,58 @@
+.svg-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #4691f6;
+}
+
+.svg-icon circle {
+  stroke: #4691f6;
+  stroke-width: 1;
+}
+
+.icon {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .avatar img{
+    height:50px;
+    width: 50px;
+    max-width: 100%;
+    border-radius: 50%;
+  }
+  
+  .name {
+    font-size: 13px;
+    margin-left: 16px;
+  }
+  
+  .name-card {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  
+  .form-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  
+  /*--bootstrap override--*/
+  .form-check {
+    padding-left: 0;
+  }
+  
+  .form-check .form-check-input {
+    float: right;
+    margin-left: 0;
+  }
+  
+  .form-control, .form-radio {
+    font-size: 14px;
+  }
